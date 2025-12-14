@@ -1,14 +1,14 @@
 # 🌸 Anime Music Garden
 
-A beautiful full-stack web application where users can log their daily interactions with anime and its music, visualizing their journey as a growing digital garden. Each check-in (anime episode, opening/ending theme, or insert song) appears as a flower in the user's personal garden, with colors and sizes reflecting ratings and emotional responses.
+A beautiful full-stack web application where users can log their daily interactions with anime and its music, visualizing their journey as a growing digital garden. Each check-in (anime episode, opening/ending theme, or insert song) appears in the user's personal garden as an image from the AniList API, with image size representing the user's emotional response and hover interactions displaying mood emojis.
 
 ## 🎯 Features
 
 - **User Authentication**: Secure JWT-based authentication system
-- **Digital Garden Visualization**: Interactive garden where each check-in blooms as a unique flower
+- **Digital Garden Visualization**: Interactive garden displaying anime artwork from AniList API, where image size represents emotional response and hover reveals mood emojis
 - **Check-in Management**: Log anime episodes, opening/ending themes, and insert songs
 - **Real-time Updates**: Socket.io integration for live garden updates
-- **Statistics Dashboard**: Track streaks, ratings, and check-in history
+- **Statistics Dashboard**: Track garden statistics and check-in history
 - **Beautiful UI**: Modern, responsive design with smooth animations
 
 ## 🛠️ Tech Stack
@@ -79,17 +79,7 @@ CLIENT_URL=http://localhost:3000
 
 ### 4. Start MongoDB
 
-Start MongoDB locally:
-```bash
-# On macOS with Homebrew
-brew services start mongodb-community
-
-# On Linux
-sudo systemctl start mongod
-
-# On Windows
-# Start MongoDB service from Services panel
-```
+Start MongoDB locally. On Windows, you can use MongoDB Compass to connect to your local MongoDB instance. Make sure MongoDB service is running before starting the application.
 
 ### 5. Run the Application
 
@@ -330,8 +320,8 @@ Import `server/test-resources/AnimeMusicGarden.pm_collection.json` into Postman 
 
 4. **Features to Test**:
    - **Dashboard**: View statistics and recent check-ins
-   - **Garden**: Visualize your check-ins as flowers (click flowers for details)
-   - **New Check-in**: Add anime episodes or music
+   - **Garden**: Visualize your check-ins as anime artwork images (image size represents your mood, hover to see emoji)
+   - **New Check-in**: Add anime episodes or music with emotional responses
    - **Profile**: View detailed statistics
    - **Real-time Updates**: Open garden in two tabs, add a check-in in one, see it appear in the other
 
@@ -354,7 +344,7 @@ Import `server/test-resources/AnimeMusicGarden.pm_collection.json` into Postman 
 ### Challenge Criteria (Medium) ✅
 - ✅ **Sockets**: Real-time garden updates using Socket.io
 - ✅ **MongoDB Change Listeners**: Change streams for automatic real-time updates
-- ✅ **Server-side 3rd Party API**: AniList API integration for anime search and details
+- ✅ **Server-side 3rd Party API**: AniList API integration for anime search, details, and artwork images displayed in the garden
 
 ### Challenge Criteria (High) ✅
 - ✅ **JWT Refresh Tokens**: Access and refresh token system with auto-login
@@ -386,7 +376,7 @@ MIT License - see LICENSE file for details
 
 ## 👤 Author
 
-Created for SI679 Final Project - Fall 2025
+Ruizhe Wang, created for SI679 Final Project - Fall 2025
 
 ## 🙏 Acknowledgments
 
@@ -394,4 +384,4 @@ Created for SI679 Final Project - Fall 2025
 - Express.js for the robust backend framework
 - MongoDB for the flexible database
 - Socket.io for real-time capabilities
-- Cursor AI and ChatGPT for providing inspirations and help during coding and debugging
+- Cursor AI and ChatGPT for providing inspirations and help during coding and debugging, also helped with documentation
