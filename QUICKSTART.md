@@ -41,8 +41,16 @@ sudo systemctl start mongod
 **OR use MongoDB Atlas (Cloud - No installation needed):**
 1. Go to https://www.mongodb.com/cloud/atlas
 2. Create free cluster
-3. Get connection string
-4. Update `MONGODB_URI` in `.env`
+3. Create database user (username and password)
+4. Add your IP to whitelist (or use 0.0.0.0/0 for development)
+5. Get connection string from "Connect" → "Connect your application"
+6. Update `MONGODB_URI` in `.env`:
+   ```env
+   MONGODB_URI=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/anime-music-garden
+   ```
+   **Important**: Add `/anime-music-garden` at the end for database name
+   
+   See `MONGODB_ATLAS_SETUP.md` for detailed setup instructions.
 
 ### 4. Run the App
 

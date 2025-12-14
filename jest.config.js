@@ -1,12 +1,15 @@
 module.exports = {
   testEnvironment: 'node',
+  maxWorkers: 1, // Run tests serially to avoid database conflicts
   coveragePathIgnorePatterns: [
     '/node_modules/',
     '/server/controllers/_tests_/',
     '/server/test-resources/'
   ],
   testMatch: [
-    '**/server/**/_tests_/**/*.test.js'
+    '**/server/**/_tests_/**/*.test.js',
+    '**/server/**/middleware/_tests_/**/*.test.js',
+    '**/server/**/services/_tests_/**/*.test.js'
   ],
   collectCoverageFrom: [
     'server/**/*.js',

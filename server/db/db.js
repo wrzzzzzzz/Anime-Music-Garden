@@ -4,8 +4,27 @@ let changeStream = null;
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/anime-music-garden');
+    // Get MongoDB URI from environment variable
+    let mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/anime-music-garden';
+    
+    // If using MongoDB Atlas (mongodb+srv://), ensure database name is included
+    if (mongoURI.startsWith('mongodb+srv://') && !mongoURI.includes('/?') && !mongoURI.match(/\/[^/?]+(\?|$)/)) {
+      // Add database name if not present
+      const dbName = 'anime-music-garden';
+      if (!mongoURI.endsWith('/')) {
+        mongoURI += '/';
+      }
+      mongoURI += dbName;
+    }
+    
+    const conn = await mongoose.connect(mongoURI, {
+      // MongoDB Atlas connection options
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+    });
+    
     console.log(`MongoDB connected: ${conn.connection.host}`);
+    console.log(`Database: ${conn.connection.name}`);
     return conn;
   } catch (error) {
     console.error('MongoDB connection error:', error);

@@ -61,9 +61,12 @@ const register = async (username, password) => {
   const accessToken = generateAccessToken(user._id);
   const refreshToken = generateRefreshToken();
 
-  // Store refresh token in user document
-  user.refreshTokens.push({ token: refreshToken });
-  await user.save();
+  // Store refresh token in user document - use findByIdAndUpdate to avoid version conflicts
+  await User.findByIdAndUpdate(
+    user._id,
+    { $push: { refreshTokens: { token: refreshToken } } },
+    { new: true }
+  );
 
   return {
     token: accessToken,
@@ -91,9 +94,12 @@ const login = async (username, password) => {
   const accessToken = generateAccessToken(user._id);
   const refreshToken = generateRefreshToken();
 
-  // Store refresh token in user document
-  user.refreshTokens.push({ token: refreshToken });
-  await user.save();
+  // Store refresh token in user document - use findByIdAndUpdate to avoid version conflicts
+  await User.findByIdAndUpdate(
+    user._id,
+    { $push: { refreshTokens: { token: refreshToken } } },
+    { new: true }
+  );
 
   return {
     token: accessToken,
@@ -115,19 +121,23 @@ const refreshAccessToken = async (refreshToken) => {
     throw new Error('Invalid refresh token');
   }
 
-  // Remove the used refresh token
-  user.refreshTokens = user.refreshTokens.filter(
-    rt => rt.token !== refreshToken
-  );
-  await user.save();
-
   // Generate new tokens
   const newAccessToken = generateAccessToken(user._id);
   const newRefreshToken = generateRefreshToken();
 
-  // Store new refresh token
-  user.refreshTokens.push({ token: newRefreshToken });
-  await user.save();
+  // Remove old token and add new one atomically
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      $pull: { refreshTokens: { token: refreshToken } }
+    }
+  );
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      $push: { refreshTokens: { token: newRefreshToken } }
+    }
+  );
 
   return {
     token: newAccessToken,

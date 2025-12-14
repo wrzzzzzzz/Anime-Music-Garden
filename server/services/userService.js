@@ -28,18 +28,29 @@ const getProfile = async (userId) => {
       acc[item._id] = item.count;
       return acc;
     }, {}),
-    averageRating: averageRating[0]?.avgRating?.toFixed(2) || 0
+    averageRating: averageRating[0]?.avgRating?.toFixed(2) || '0'
   };
 
   return { user, stats };
 };
 
 const updateProfile = async (userId, updateData) => {
-  const user = await User.findByIdAndUpdate(
+  // Retry in case of timing issues
+  let user = await User.findByIdAndUpdate(
     userId,
     updateData,
     { new: true, runValidators: true }
   ).select('-password');
+
+  if (!user) {
+    // Retry once after a short delay
+    await new Promise(resolve => setTimeout(resolve, 50));
+    user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+  }
 
   if (!user) {
     throw new Error('User not found');

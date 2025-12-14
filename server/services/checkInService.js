@@ -28,11 +28,29 @@ const createCheckIn = async (userId, checkInData) => {
 
   await checkIn.save();
 
-  // Update user's garden
-  const user = await User.findById(userId);
-  user.garden.flowers.push(checkIn._id);
-  user.garden.totalCheckIns += 1;
-  await user.save();
+  // Update user's garden - use findByIdAndUpdate to avoid version conflicts
+  // Ensure garden field exists by using $set with default values if needed
+  // Retry finding user in case of timing issues
+  let user = await User.findById(userId);
+  if (!user) {
+    // Retry once after a short delay
+    await new Promise(resolve => setTimeout(resolve, 50));
+    user = await User.findById(userId);
+  }
+  if (!user) {
+    throw new Error('User not found');
+  }
+  if (!user.garden) {
+    user.garden = { flowers: [], totalCheckIns: 0 };
+    await user.save();
+  }
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      $push: { 'garden.flowers': checkIn._id },
+      $inc: { 'garden.totalCheckIns': 1 }
+    }
+  );
 
   // Reload checkIn to ensure all fields are included
   const savedCheckIn = await CheckIn.findById(checkIn._id);
@@ -108,7 +126,19 @@ const deleteCheckIn = async (checkInId, userId) => {
   }
 
   // Remove from user's garden
-  const user = await User.findById(userId);
+  // Retry finding user in case of timing issues
+  let user = await User.findById(userId);
+  if (!user) {
+    // Retry once after a short delay
+    await new Promise(resolve => setTimeout(resolve, 100));
+    user = await User.findById(userId);
+  }
+  if (!user) {
+    throw new Error('User not found');
+  }
+  if (!user.garden) {
+    user.garden = { flowers: [], totalCheckIns: 0 };
+  }
   user.garden.flowers = user.garden.flowers.filter(
     flowerId => flowerId.toString() !== checkIn._id.toString()
   );

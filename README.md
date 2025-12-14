@@ -65,9 +65,11 @@ PORT=5000
 NODE_ENV=development
 
 # MongoDB
-MONGODB_URI=mongodb://localhost:27017/anime-music-garden
-# OR for MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/anime-music-garden
+# For local MongoDB:
+# MONGODB_URI=mongodb://localhost:27017/anime-music-garden
+# For MongoDB Atlas (Cloud - Recommended):
+MONGODB_URI=mongodb+srv://username:password@cluster0.mongodb.net/anime-music-garden
+# Note: Replace username, password, and cluster0.mongodb.net with your Atlas credentials
 
 # JWT Secret
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -94,7 +96,16 @@ sudo systemctl start mongod
 # Start MongoDB service from Services panel
 ```
 
-Or use MongoDB Atlas (cloud) - no local installation needed.
+Or use **MongoDB Atlas (cloud)** - no local installation needed:
+1. Go to https://www.mongodb.com/cloud/atlas
+2. Create a free account and cluster
+3. Create a database user (username and password)
+4. Add your IP address to the whitelist (or use 0.0.0.0/0 for development)
+5. Get your connection string from "Connect" → "Connect your application"
+6. Update `MONGODB_URI` in `.env` with your connection string
+7. Make sure to add the database name at the end: `/anime-music-garden`
+
+See `MONGODB_ATLAS_SETUP.md` for detailed step-by-step instructions.
 
 ### 5. Run the Application
 
@@ -388,3 +399,4 @@ Created for SI679 Final Project - Fall 2025
 - Express.js for the robust backend framework
 - MongoDB for the flexible database
 - Socket.io for real-time capabilities
+- Cursor AI for providing inspirations and help during debug
