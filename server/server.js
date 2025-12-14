@@ -85,18 +85,17 @@ app.get('/api/health', (req, res) => {
 
 // Serve static files from client build (for production)
 const serverPath = process.env.SERVER_DIR || __dirname;
-const clientBuildPath = path.join(serverPath, '../client/dist');
+const clientBuildPath = path.join(__dirname, '..', 'client', 'dist');
 
 // Serve static files from client build directory
 app.use(express.static(clientBuildPath));
 
 // Serve index.html for all non-API routes (SPA routing)
+app.use(express.static(clientBuildPath));
 app.get('*', (req, res) => {
-  // If it's an API route, return 404
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ message: 'Route not found' });
   }
-  // Otherwise, serve the React app
   res.sendFile(path.join(clientBuildPath, 'index.html'));
 });
 
